@@ -106,7 +106,7 @@ namespace F8Framework.Core.Editor
             FileTools.CheckDirAndCreateWhenNeeded(INPUT_PATH);
             
             var files = Directory.GetFiles(INPUT_PATH, "*.*", SearchOption.AllDirectories)
-                .Where(s => s.EndsWith(".xls") || s.EndsWith(".xlsx")).ToArray();
+                .Where(s => (s.EndsWith(".xls") || s.EndsWith(".xlsx")) && !Path.GetFileName(s).StartsWith("~$")).ToArray();
             if (files == null || files.Length == 0)
             {
                 FileTools.SafeCopyFile(
@@ -118,7 +118,8 @@ namespace F8Framework.Core.Editor
                     "/Runtime/Localization/StreamingAssets_config/Localization.xlsx",
                     lastExcelPath + "/Localization.xlsx");
                 files = Directory.GetFiles(INPUT_PATH, "*.*", SearchOption.AllDirectories)
-                    .Where(s => s.EndsWith(".xls") || s.EndsWith(".xlsx")).ToArray();
+                    .Where(s => (s.EndsWith(".xls") || s.EndsWith(".xlsx")) && !Path.GetFileName(s).StartsWith("~$"))
+                    .ToArray();
                 LogF8.LogError("暂无可以导入的数据表！自动为你创建：【DemoWorkSheet.xlsx / Localization.xlsx】两个表格！" + lastExcelPath + " 目录");
             }
             
@@ -335,6 +336,11 @@ namespace F8Framework.Core.Editor
 
         private static void GetExcelData(string inputPath)
         {
+            if (Path.GetFileName(inputPath).StartsWith("~$"))
+            {
+                return;
+            }
+            
             FileStream stream = null;
             try
             {
