@@ -375,7 +375,7 @@ namespace F8Framework.Core.Editor
                         }
 
                         //空行不处理
-                        if (datas.Length == 0 || string.IsNullOrEmpty(datas[0]))
+                        if (datas.Length == 0 || string.IsNullOrEmpty(datas[0]) || datas[0].StartsWith("#"))
                         {
                             ++index;
                             continue;
